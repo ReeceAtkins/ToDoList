@@ -1,7 +1,6 @@
 # ToDoList
 A to-do-list with assignable tasks
 ### Purpose
-This application is designed to help individuals or teams manage their tasks efficiently by providing a centralized platform for task assignment and tracking.
-
+This application is designed to help one or more people with task managment. Where one account holds multiple customizable profiles that can be assigned tasks.
 ## Requirements
 [Visual Studio 2022](https://visualstudio.microsoft.com/vs/community/)
