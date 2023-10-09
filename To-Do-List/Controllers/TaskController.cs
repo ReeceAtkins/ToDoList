@@ -2,6 +2,7 @@
 using To_Do_List.Models;
 using To_Do_List.Data;
 using Task = To_Do_List.Models.Task;
+using Microsoft.EntityFrameworkCore;
 
 namespace To_Do_List.Controllers
 {
@@ -14,9 +15,12 @@ namespace To_Do_List.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int id)
         {
-            return View();
+            List<Task> tasks = await (from task in _context.Tasks
+                                      select task).ToListAsync();
+
+            return View(tasks);
         }
 
         [HttpGet]
