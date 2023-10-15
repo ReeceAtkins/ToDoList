@@ -36,9 +36,9 @@ namespace To_Do_List.Controllers
                 _context.Add(task);
                 await _context.SaveChangesAsync();
 
-                ViewData["Message"] = $"{task.Title} was created!";
+                TempData["Message"] = $"\"{task.Title}\" was created!";
 
-                return View();
+                return RedirectToAction("Index");
             }
 
             return View(task);
@@ -64,7 +64,7 @@ namespace To_Do_List.Controllers
                 _context.Tasks.Update(TaskModel);
                 await _context.SaveChangesAsync();
 
-                TempData["Message"] = $"{TaskModel.Title} was updated successfully";
+                TempData["Message"] = $"\"{TaskModel.Title}\" was updated successfully!";
                 return RedirectToAction("Index");
             }
 
