@@ -36,12 +36,39 @@ namespace To_Do_List.Controllers
                 _context.Add(task);
                 await _context.SaveChangesAsync();
 
-                ViewData["Message"] = $"{task.Title} was created!";
+                TempData["Message"] = $"\"{task.Title}\" was created!";
 
-                return View();
+                return RedirectToAction("Index");
             }
 
             return View(task);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            Task? taskToEdit = await _context.Tasks.FindAsync(id);
+
+            if (taskToEdit == null)
+            {
+                return NotFound();
+            }
+
+            return View(taskToEdit);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Task TaskModel)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Tasks.Update(TaskModel);
+                await _context.SaveChangesAsync();
+
+                TempData["Message"] = $"\"{TaskModel.Title}\" was updated successfully!";
+                return RedirectToAction("Index");
+            }
+
+            return View(TaskModel);
         }
     }
 }
