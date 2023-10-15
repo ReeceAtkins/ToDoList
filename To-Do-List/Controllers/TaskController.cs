@@ -3,9 +3,11 @@ using To_Do_List.Models;
 using To_Do_List.Data;
 using Task = To_Do_List.Models.Task;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace To_Do_List.Controllers
 {
+    [Authorize]
     public class TaskController : Controller
     {
         private readonly ApplicationDbContext _context;
