@@ -9,6 +9,8 @@ namespace To_Do_List.Data
     {
         public DbSet<Task> Tasks { get; set; }
 
+        public DbSet<Profile> Profiles { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

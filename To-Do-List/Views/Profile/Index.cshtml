@@ -1,0 +1,29 @@
+﻿@model IEnumerable<To_Do_List.Models.Profile>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+<h1>Profiles</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+@foreach (var item in Model) {
+
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">@Html.DisplayFor(modelItem => item.Name)</h5>
+            <a asp-action="AssignedTasks" asp-route-id="@item.ProfileId">Assigned Tasks</a> |
+            <a asp-action="Delete" asp-route-id="@item.ProfileId">Delete</a>
+        </div>
+    </div>
+}
