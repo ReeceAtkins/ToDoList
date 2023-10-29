@@ -60,5 +60,34 @@ namespace To_Do_List.Controllers
 
             return View(profile);
         }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            Profile? profileToDelete = await _context.Profiles.FindAsync(id);
+
+            if (profileToDelete == null)
+            {
+                return NotFound();
+            }
+
+            return View(profileToDelete);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfimed(int id)
+        {
+            Profile profileToDelete = await _context.Profiles.FindAsync(id);
+
+            if (profileToDelete != null)
+            {
+                _context.Remove(profileToDelete);
+                await _context.SaveChangesAsync();
+                TempData["Message"] = $"\"{profileToDelete.Name}\" was deleted successfully!";
+                return RedirectToAction("Index");
+            }
+
+            TempData["Message"] = "This task was already deleted";
+            return RedirectToAction("Index");
+        }
     }
 }
