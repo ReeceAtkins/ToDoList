@@ -29,6 +29,17 @@ namespace To_Do_List.Models
         /// <summary>
         /// The person assigned to complete the task
         /// </summary>
-        public string Assignee { get; set; }
+        public Profile Assignee { get; set; }
+    }
+
+    public class TaskCreateViewModel 
+    {
+        public string Title { get; set; }
+
+        public string Description { get; set; }
+
+        public List<Profile>? AllProfiles { get; set; }
+
+        public int ChosenProfile { get; set; }
     }
 }
