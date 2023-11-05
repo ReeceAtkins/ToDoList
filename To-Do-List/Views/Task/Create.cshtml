@@ -36,10 +36,6 @@
             </div>
             <div class="form-group">
                 <select asp-for="ChosenProfile" asp-items="profilesSelectList">
-                    @foreach (Profile profile in Model.AllProfiles)
-                    {
-                        <option value="@profile.ProfileId">@profile.Name</option>
-                    }
                 </select>
             </div>
             <div class="form-group">
