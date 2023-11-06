@@ -5,6 +5,7 @@ using Task = To_Do_List.Models.Task;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Profile = To_Do_List.Models.Profile;
 
 namespace To_Do_List.Controllers
 {
