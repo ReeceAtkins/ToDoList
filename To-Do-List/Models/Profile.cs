@@ -13,4 +13,13 @@ namespace To_Do_List.Models
 
         public string UserId { get; set; }
     }
+
+    public class ProfileDisplayTaskViewModel
+    {
+        public int ProfileId { get; set; }
+
+        public string Name { get; set; }
+
+        public List<Task>? AllTasks { get; set; }
+    }
 }

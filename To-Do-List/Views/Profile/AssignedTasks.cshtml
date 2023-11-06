@@ -1,0 +1,44 @@
+﻿@model To_Do_List.Models.ProfileDisplayTaskViewModel
+@using Task = To_Do_List.Models.Task;
+
+@{
+    ViewData["Title"] = "AssignedTasks";
+
+}
+
+<h1>AssignedTasks for @Model.Name</h1>
+
+<p>
+    <a asp-action="/Task/Create">Create new task</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProfileId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (Task task in Model.AllTasks) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => task.TaskId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => task.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => task.Description)
+            </td>
+            <td>
+                <a asp-action="/Task/Delete" asp-route-id="@task.TaskId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

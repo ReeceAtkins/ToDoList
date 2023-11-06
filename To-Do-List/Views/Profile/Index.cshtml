@@ -22,8 +22,11 @@
     <div class="card" style="width: 18rem;">
         <div class="card-body">
             <h5 class="card-title">@Html.DisplayFor(modelItem => item.Name)</h5>
-            <a asp-action="AssignedTasks" asp-route-id="@item.ProfileId">Assigned Tasks</a> |
+            <a asp-action="AssignedTasks" asp-route-id="@item.ProfileId">See Assigned Tasks</a> |
             <a asp-action="Delete" asp-route-id="@item.ProfileId">Delete</a>
+        </div>
+        <div class="card-body">
+            
         </div>
     </div>
 }
