@@ -36,7 +36,8 @@
                 @Html.DisplayFor(modelItem => task.Description)
             </td>
             <td>
-                <a asp-action="/Task/Delete" asp-route-id="@task.TaskId">Delete</a>
+                <a asp-controller="Task" asp-action="Delete" asp-route-id="@task.TaskId">Delete task</a>
+                <a asp-controller="Task" asp-action="Edit" asp-route-id="@task.TaskId">Edit task</a> |
             </td>
         </tr>
 }
