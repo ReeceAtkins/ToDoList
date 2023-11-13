@@ -2,11 +2,11 @@
 @using Task = To_Do_List.Models.Task;
 
 @{
-    ViewData["Title"] = "AssignedTasks";
+    ViewData["Title"] = "Assigned Tasks";
 
 }
 
-<h1>AssignedTasks for @Model.Name</h1>
+<h1>Assigned Tasks for @Html.DisplayFor(Model => Model.Name)</h1>
 
 <p>
     <a asp-action="/Task/Create">Create new task</a>
@@ -15,12 +15,12 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Id
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ProfileId)
+                Title
             </th>
-            <th></th>
+            <th>Description</th>
         </tr>
     </thead>
     <tbody>

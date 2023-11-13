@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 using To_Do_List.Data;
 using To_Do_List.Models;
 using Task = To_Do_List.Models.Task;
@@ -23,40 +24,29 @@ namespace To_Do_List.Controllers
 
         public async Task<IActionResult> Index(int id)
         {
-            
-
-//            ProfileIndexViewModel viewModel = new()
-//            {
-//                AllProfiles = (from Profile in _context.Profiles
-//                               where Profile.UserId == _userManager.GetUserId(User)
-//                               select Profile).OrderBy(p => p.UserId).ToList()
-//                ,AllTasks = (from Task in _context.Tasks
-//                             where Task.Assignee.UserId == _userManager.GetUserId(User)
-//                             select Task).OrderBy(t => t.TaskId).ToList()
-
-//            };
-
             // Selects profiles that UserId matches with the current logged in user
             List<Profile> Profiles = await (from Profile in _context.Profiles
                                       where Profile.UserId == _userManager.GetUserId(User)
                                       select Profile).ToListAsync();
-
-            if (Profiles.Count > 0)
-            {
-                TempData["DoesUserHaveProfiles"] = true;
-            }
 
             return View(Profiles);
         }
 
         public async Task<IActionResult> AssignedTasks(int id)
         {
+            Profile? profile = await (from Profile in _context.Profiles
+                                     where(Profile.ProfileId == id)
+                                     select Profile).FirstOrDefaultAsync();
+
             ProfileDisplayTaskViewModel viewModel = new()
             {
                 AllTasks = await (from Task in _context.Tasks
                                   join Profile in _context.Profiles on Task.Assignee.ProfileId equals id
                                   where Task.Assignee.ProfileId == Profile.ProfileId
                                   select Task).OrderBy(t => t.TaskId).ToListAsync()
+
+                , Name = profile.Name
+                , ProfileId = profile.ProfileId
             };
 
 
