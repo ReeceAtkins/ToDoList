@@ -40,6 +40,11 @@ namespace To_Do_List.Controllers
                                       where Profile.UserId == _userManager.GetUserId(User)
                                       select Profile).ToListAsync();
 
+            if (Profiles.Count > 0)
+            {
+                TempData["DoesUserHaveProfiles"] = true;
+            }
+
             return View(Profiles);
         }
 
