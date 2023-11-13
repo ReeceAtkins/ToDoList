@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using To_Do_List.Data;
 using To_Do_List.Models;
+using Task = To_Do_List.Models.Task;
 
 namespace To_Do_List.Controllers
 {
@@ -113,13 +114,27 @@ namespace To_Do_List.Controllers
 
             if (profileToDelete != null)
             {
+                // set all tasks to be deleted that are assigned to given profile id
+                List<Models.Task> TaskToDelete = await (from task in _context.Tasks
+                                          where task.Assignee.ProfileId == profileToDelete.ProfileId
+                                          select task).ToListAsync();
+
+                foreach (Task task in TaskToDelete)
+                {
+                    _context.Remove(task);
+                }
+
+                // set profile to be deleted
                 _context.Remove(profileToDelete);
+
+                // Save changes
                 await _context.SaveChangesAsync();
-                TempData["Message"] = $"\"{profileToDelete.Name}\" was deleted successfully!";
+
+                TempData["Message"] = $"\"{profileToDelete.Name}\" and all Tasks associated were deleted successfully!";
                 return RedirectToAction("Index");
             }
 
-            TempData["Message"] = "This task was already deleted";
+            TempData["Message"] = "This profile was already deleted";
             return RedirectToAction("Index");
         }
     }
