@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 using To_Do_List.Data;
 using To_Do_List.Models;
+using Task = To_Do_List.Models.Task;
 
 namespace To_Do_List.Controllers
 {
@@ -22,40 +24,29 @@ namespace To_Do_List.Controllers
 
         public async Task<IActionResult> Index(int id)
         {
-            
-
-//            ProfileIndexViewModel viewModel = new()
-//            {
-//                AllProfiles = (from Profile in _context.Profiles
-//                               where Profile.UserId == _userManager.GetUserId(User)
-//                               select Profile).OrderBy(p => p.UserId).ToList()
-//                ,AllTasks = (from Task in _context.Tasks
-//                             where Task.Assignee.UserId == _userManager.GetUserId(User)
-//                             select Task).OrderBy(t => t.TaskId).ToList()
-
-//            };
-
             // Selects profiles that UserId matches with the current logged in user
             List<Profile> Profiles = await (from Profile in _context.Profiles
                                       where Profile.UserId == _userManager.GetUserId(User)
                                       select Profile).ToListAsync();
-
-            if (Profiles.Count > 0)
-            {
-                TempData["DoesUserHaveProfiles"] = true;
-            }
 
             return View(Profiles);
         }
 
         public async Task<IActionResult> AssignedTasks(int id)
         {
+            Profile? profile = await (from Profile in _context.Profiles
+                                     where(Profile.ProfileId == id)
+                                     select Profile).FirstOrDefaultAsync();
+
             ProfileDisplayTaskViewModel viewModel = new()
             {
                 AllTasks = await (from Task in _context.Tasks
                                   join Profile in _context.Profiles on Task.Assignee.ProfileId equals id
                                   where Task.Assignee.ProfileId == Profile.ProfileId
                                   select Task).OrderBy(t => t.TaskId).ToListAsync()
+
+                , Name = profile.Name
+                , ProfileId = profile.ProfileId
             };
 
 
@@ -113,13 +104,27 @@ namespace To_Do_List.Controllers
 
             if (profileToDelete != null)
             {
+                // set all tasks to be deleted that are assigned to given profile id
+                List<Models.Task> TaskToDelete = await (from task in _context.Tasks
+                                          where task.Assignee.ProfileId == profileToDelete.ProfileId
+                                          select task).ToListAsync();
+
+                foreach (Task task in TaskToDelete)
+                {
+                    _context.Remove(task);
+                }
+
+                // set profile to be deleted
                 _context.Remove(profileToDelete);
+
+                // Save changes
                 await _context.SaveChangesAsync();
-                TempData["Message"] = $"\"{profileToDelete.Name}\" was deleted successfully!";
+
+                TempData["Message"] = $"\"{profileToDelete.Name}\" and all Tasks associated were deleted successfully!";
                 return RedirectToAction("Index");
             }
 
-            TempData["Message"] = "This task was already deleted";
+            TempData["Message"] = "This profile was already deleted";
             return RedirectToAction("Index");
         }
     }
