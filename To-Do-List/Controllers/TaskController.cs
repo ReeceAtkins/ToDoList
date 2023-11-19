@@ -74,25 +74,47 @@ namespace To_Do_List.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            Task? taskToEdit = await _context.Tasks.FindAsync(id);
+            Task? task = await _context.Tasks
+                .Include(t => t.Assignee)
+                .FirstOrDefaultAsync(t => t.TaskId == id);
 
-            if (taskToEdit == null)
+            if (task == null)
             {
                 return NotFound();
             }
+
+            TaskEditViewModel taskToEdit = new()
+            {
+                TaskId = task.TaskId,
+                ProfileId = task.Assignee.ProfileId,
+                Title = task.Title,
+                Description = task.Description
+            };
 
             return View(taskToEdit);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Task TaskModel)
+        public async Task<IActionResult> Edit(TaskEditViewModel TaskModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Tasks.Update(TaskModel);
+                Task taskToEdit = new()
+                {
+                    TaskId = TaskModel.TaskId,
+                    Title = TaskModel.Title,
+                    Description = TaskModel.Description,
+                    Assignee = await _context.Profiles.FindAsync(TaskModel.ProfileId)
+                };
+
+
+                _context.Tasks.Update(taskToEdit);
                 await _context.SaveChangesAsync();
 
-                TempData["Message"] = $"\"{TaskModel.Title}\" was updated successfully!";
+                TempData["Message"] = $"\"{taskToEdit.Title}\" was updated successfully!";
+
+                // find profile assigneed to task
+
                 return RedirectToAction("Index");
             }
 
