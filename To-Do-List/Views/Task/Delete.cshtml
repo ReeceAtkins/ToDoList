@@ -1,4 +1,4 @@
-﻿@model To_Do_List.Models.Task
+﻿@model To_Do_List.Models.TaskEditAndDeleteViewModel
 
 @{
     ViewData["Title"] = "Delete";
@@ -27,6 +27,8 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="TaskId" />
+        <input type="hidden" asp-for="ProfileId" />
+        <input type="hidden" asp-for="Title" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

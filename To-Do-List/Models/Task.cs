@@ -43,7 +43,7 @@ namespace To_Do_List.Models
         public int ChosenProfile { get; set; }
     }
 
-    public class TaskEditViewModel 
+    public class TaskEditAndDeleteViewModel 
     { 
         public int TaskId { get; set; }
 
