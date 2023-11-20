@@ -18,7 +18,9 @@
 <h1>Assigned Tasks for @Html.DisplayFor(Model => Model.Name)</h1>
 
 <p>
-    <a asp-action="/Task/Create">Create new task</a>
+    <a asp-controller="Task" asp-action="CreateWithId" asp-route-id="@Model.ProfileId">
+        Create new task for @Html.DisplayFor(Model => Model.Name)
+    </a>
 </p>
 <table class="table">
     <thead>

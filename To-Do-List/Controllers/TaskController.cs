@@ -30,16 +30,30 @@ namespace To_Do_List.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             // Selects all profiles that the user has created
             TaskCreateViewModel viewModel = new()
             {
-                AllProfiles = (from Profile in _context.Profiles
+                AllProfiles = await (from Profile in _context.Profiles
                              where Profile.UserId == _userManager.GetUserId(User)
-                             select Profile).OrderBy(p => p.UserId).ToList()
+                             select Profile).OrderBy(p => p.UserId).ToListAsync()
             };
             return View(viewModel);
+        }
+
+        [HttpGet("CreateWithId/{id}")]
+        public async Task<IActionResult> CreateWithId(int id)
+        {
+            TaskCreateViewModel viewModel = new()
+            {
+                // Selects a single profile
+                AllProfiles = await(from Profile in _context.Profiles
+                                    where Profile.ProfileId == id
+                                    select Profile).ToListAsync()
+            };
+
+            return View("Create", viewModel);
         }
 
         [HttpPost]
@@ -65,7 +79,7 @@ namespace To_Do_List.Controllers
 
                 TempData["Message"] = $"\"{newTask.Title}\" was created!";
 
-                return RedirectToAction("Index");
+                return RedirectToAction("AssignedTasks", "Profile", new { Id = newTask.Assignee.ProfileId });
             }
 
             task.AllProfiles = _context.Profiles.OrderBy(p => p.Name).ToList();
