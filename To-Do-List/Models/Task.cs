@@ -42,4 +42,15 @@ namespace To_Do_List.Models
 
         public int ChosenProfile { get; set; }
     }
+
+    public class TaskEditAndDeleteViewModel 
+    { 
+        public int TaskId { get; set; }
+
+        public string Title { get; set; }
+
+        public string Description { get; set; }
+
+        public int ProfileId { get; set; }
+    }
 }

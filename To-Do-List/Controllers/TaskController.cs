@@ -74,26 +74,46 @@ namespace To_Do_List.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            Task? taskToEdit = await _context.Tasks.FindAsync(id);
+            Task? task = await _context.Tasks
+                .Include(t => t.Assignee)
+                .FirstOrDefaultAsync(t => t.TaskId == id);
 
-            if (taskToEdit == null)
+            if (task == null)
             {
                 return NotFound();
             }
+
+			TaskEditAndDeleteViewModel taskToEdit = new()
+            {
+                TaskId = task.TaskId,
+                ProfileId = task.Assignee.ProfileId,
+                Title = task.Title,
+                Description = task.Description
+            };
 
             return View(taskToEdit);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Task TaskModel)
+        public async Task<IActionResult> Edit(TaskEditAndDeleteViewModel TaskModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Tasks.Update(TaskModel);
+                Task taskToEdit = new()
+                {
+                    TaskId = TaskModel.TaskId,
+                    Title = TaskModel.Title,
+                    Description = TaskModel.Description,
+                    Assignee = await _context.Profiles.FindAsync(TaskModel.ProfileId)
+                };
+
+
+                _context.Tasks.Update(taskToEdit);
                 await _context.SaveChangesAsync();
 
-                TempData["Message"] = $"\"{TaskModel.Title}\" was updated successfully!";
-                return RedirectToAction("Index");
+                TempData["Message"] = $"\"{taskToEdit.Title}\" was updated successfully!";
+
+                return RedirectToAction("AssignedTasks", "Profile", new { Id = taskToEdit.Assignee.ProfileId });
             }
 
             return View(TaskModel);
@@ -101,27 +121,47 @@ namespace To_Do_List.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            Task? taskToDelete = await _context.Tasks.FindAsync(id);
+			Task? task = await _context.Tasks
+				.Include(t => t.Assignee)
+				.FirstOrDefaultAsync(t => t.TaskId == id);
 
-            if (taskToDelete == null)
+			if (task == null)
             {
                 return NotFound();
             }
 
-            return View(taskToDelete);
+			TaskEditAndDeleteViewModel taskToDelete = new()
+			{
+				TaskId = task.TaskId,
+				ProfileId = task.Assignee.ProfileId,
+				Title = task.Title,
+				Description = task.Description
+			};
+
+			return View(taskToDelete);
         }
 
         [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfimed(int id)
+        public async Task<IActionResult> DeleteConfimed(TaskEditAndDeleteViewModel TaskModel)
         {
-            Task taskToDelete = await _context.Tasks.FindAsync(id);
+            //Task taskToDelete = await _context.Tasks.FindAsync(id);
 
-            if(taskToDelete != null)
+            Task taskToDelete = new()
+            {
+                TaskId = TaskModel.TaskId,
+                Title = TaskModel.Title,
+                Description = TaskModel.Description,
+                Assignee = await _context.Profiles.FindAsync(TaskModel.ProfileId)
+            };
+
+            if (taskToDelete != null)
             {
                 _context.Remove(taskToDelete);
                 await _context.SaveChangesAsync();
+
                 TempData["Message"] = $"\"{taskToDelete.Title}\" was deleted successfully!";
-                return RedirectToAction("Index");
+
+                return RedirectToAction("AssignedTasks", "Profile", new { Id = taskToDelete.Assignee.ProfileId });
             }
 
             TempData["Message"] = "This task was already deleted";
