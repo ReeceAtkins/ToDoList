@@ -113,9 +113,7 @@ namespace To_Do_List.Controllers
 
                 TempData["Message"] = $"\"{taskToEdit.Title}\" was updated successfully!";
 
-                // find profile assigneed to task
-
-                return RedirectToAction("Index");
+                return RedirectToAction("AssignedTasks", "Profile", new { Id = taskToEdit.Assignee.ProfileId });
             }
 
             return View(TaskModel);

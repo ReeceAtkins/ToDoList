@@ -38,10 +38,15 @@ namespace To_Do_List.Controllers
                                      where(Profile.ProfileId == id)
                                      select Profile).FirstOrDefaultAsync();
 
+            if (profile == null)
+            {
+                return NotFound();
+            }
+
             ProfileDisplayTaskViewModel viewModel = new()
             {
                 AllTasks = await (from Task in _context.Tasks
-                                  join Profile in _context.Profiles on Task.Assignee.ProfileId equals id
+                                  join Profile in _context.Profiles on Task.Assignee.ProfileId equals profile.ProfileId
                                   where Task.Assignee.ProfileId == Profile.ProfileId
                                   select Task).OrderBy(t => t.TaskId).ToListAsync()
 
