@@ -121,14 +121,12 @@ namespace To_Do_List.Controllers
                     _context.Remove(task);
                 }
 
-                // set profile to be deleted
+                // Remove profile and save changes
                 _context.Remove(profileToDelete);
-
-                // Save changes
                 await _context.SaveChangesAsync();
 
                 TempData["Message"] = $"\"{profileToDelete.Name}\" and all Tasks associated were deleted successfully!";
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             TempData["Message"] = "This profile was already deleted";
