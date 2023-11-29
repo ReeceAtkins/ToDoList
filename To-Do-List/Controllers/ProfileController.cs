@@ -14,11 +14,13 @@ namespace To_Do_List.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ProfileController(ApplicationDbContext context,  UserManager<IdentityUser> userManager)
+        public ProfileController(ApplicationDbContext context,  UserManager<IdentityUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
         }
 
 
@@ -84,7 +86,7 @@ namespace To_Do_List.Controllers
                 await _context.SaveChangesAsync();
 
                 TempData["Message"] = $"{profile.Name} was added successfully!";
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             return View(profile);
@@ -119,14 +121,12 @@ namespace To_Do_List.Controllers
                     _context.Remove(task);
                 }
 
-                // set profile to be deleted
+                // Remove profile and save changes
                 _context.Remove(profileToDelete);
-
-                // Save changes
                 await _context.SaveChangesAsync();
 
                 TempData["Message"] = $"\"{profileToDelete.Name}\" and all Tasks associated were deleted successfully!";
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             TempData["Message"] = "This profile was already deleted";

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using To_Do_List.Data;
 using To_Do_List.Models;
@@ -21,15 +22,20 @@ namespace To_Do_List.Controllers
             _userManager = userManager;
         }
 
-        public  IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            int numProfiles = (from Profile in _context.Profiles
-                                     where Profile.UserId == _userManager.GetUserId(User)
-                                     select Profile).Count();
+            int numProfiles = 0;
+            if (User.Identity.IsAuthenticated)
+            {
+                numProfiles = await (from Profile in _context.Profiles
+                                   where Profile.UserId == _userManager.GetUserId(User)
+                                   select Profile).CountAsync();
+            }
+
+            HttpContext.Session.SetInt32("DoesUserHaveProfiles", numProfiles);
 
             if (numProfiles > 0)
             {
-                HttpContext.Session.SetInt32("DoesUserHaveProfiles", numProfiles);
                 return RedirectToAction("Index", "Profile");
             }
 
