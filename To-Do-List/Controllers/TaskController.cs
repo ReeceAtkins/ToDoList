@@ -29,6 +29,10 @@ namespace To_Do_List.Controllers
             return View(tasks);
         }
 
+        /// <summary>
+        /// Populates Create ViewModel
+        /// </summary>
+        /// <returns>ViewModel</returns>
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -42,6 +46,11 @@ namespace To_Do_List.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Populates Create ViewModel with given ProfileId
+        /// </summary>
+        /// <param name="id">Profile's Id</param>
+        /// <returns>Create View and ViewModel</returns>
         [HttpGet("CreateWithId/{id}")]
         public async Task<IActionResult> CreateWithId(int id)
         {
@@ -56,10 +65,14 @@ namespace To_Do_List.Controllers
             return View("Create", viewModel);
         }
 
+        /// <summary>
+        /// Creates a new Task
+        /// </summary>
+        /// <param name="task">The create view's ViewModel</param>
+        /// <returns>Redirect to AssignedTasks in Profile controller</returns>
         [HttpPost]
         public async Task<IActionResult> Create(TaskCreateViewModel task)
         {
-
             if (ModelState.IsValid)
             {
                 Task newTask = new()
@@ -79,6 +92,7 @@ namespace To_Do_List.Controllers
 
                 TempData["Message"] = $"\"{newTask.Title}\" was created!";
 
+                // Redirects to the profile that matches the tasks's 'Assignee.ProfileId'
                 return RedirectToAction("AssignedTasks", "Profile", new { Id = newTask.Assignee.ProfileId });
             }
 
@@ -86,6 +100,11 @@ namespace To_Do_List.Controllers
             return View(task);
         }
 
+        /// <summary>
+        /// Selects task by given Id then populates ViewModel
+        /// </summary>
+        /// <param name="id">The Task's Id</param>
+        /// <returns>Populated ViewModel to Edit View</returns>
         public async Task<IActionResult> Edit(int id)
         {
             Task? task = await _context.Tasks
@@ -108,6 +127,11 @@ namespace To_Do_List.Controllers
             return View(taskToEdit);
         }
 
+        /// <summary>
+        /// Edits a single task
+        /// </summary>
+        /// <param name="TaskModel">The Edit View's ViewModel</param>
+        /// <returns>Redirects to Assigned Tasks in Profile controller</returns>
         [HttpPost]
         public async Task<IActionResult> Edit(TaskEditAndDeleteViewModel TaskModel)
         {
@@ -133,6 +157,11 @@ namespace To_Do_List.Controllers
             return View(TaskModel);
         }
 
+        /// <summary>
+        /// Selects task then populates viewModel with Task to be deleted
+        /// </summary>
+        /// <param name="id">The Task's id</param>
+        /// <returns>Delete confirmation View</returns>
         public async Task<IActionResult> Delete(int id)
         {
 			Task? task = await _context.Tasks
@@ -155,11 +184,14 @@ namespace To_Do_List.Controllers
 			return View(taskToDelete);
         }
 
+        /// <summary>
+        /// Deletes given Task
+        /// </summary>
+        /// <param name="TaskModel">The Delete View's ViewModel</param>
+        /// <returns>Redirects to AssignedTasks in Profile controller</returns>
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfimed(TaskEditAndDeleteViewModel TaskModel)
         {
-            //Task taskToDelete = await _context.Tasks.FindAsync(id);
-
             Task taskToDelete = new()
             {
                 TaskId = TaskModel.TaskId,
@@ -179,7 +211,7 @@ namespace To_Do_List.Controllers
             }
 
             TempData["Message"] = "This task was already deleted";
-            return RedirectToAction("Index");
+            return RedirectToAction("AssignedTasks", "Profile", new { Id = taskToDelete.Assignee.ProfileId });
         }
     }
 }

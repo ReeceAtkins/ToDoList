@@ -23,10 +23,12 @@ namespace To_Do_List.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-
-        public async Task<IActionResult> Index(int id)
+        /// <summary>
+        /// Selects list of profiles that belong to logged in user
+        /// </summary>
+        /// <returns>List of Profiles</returns>
+        public async Task<IActionResult> Index()
         {
-            // Selects profiles that UserId matches with the current logged in user
             List<Profile> Profiles = await (from Profile in _context.Profiles
                                       where Profile.UserId == _userManager.GetUserId(User)
                                       select Profile).ToListAsync();
@@ -34,6 +36,11 @@ namespace To_Do_List.Controllers
             return View(Profiles);
         }
 
+        /// <summary>
+        /// Selects list of Tasks that a profile holds
+        /// </summary>
+        /// <param name="id">The profile's id</param>
+        /// <returns>List of Tasks</returns>
         public async Task<IActionResult> AssignedTasks(int id)
         {
             Profile? profile = await (from Profile in _context.Profiles
@@ -45,6 +52,7 @@ namespace To_Do_List.Controllers
                 return NotFound();
             }
 
+            // Populate ViewModel
             ProfileDisplayTaskViewModel viewModel = new()
             {
                 AllTasks = await (from Task in _context.Tasks
@@ -56,11 +64,13 @@ namespace To_Do_List.Controllers
                 , ProfileId = profile.ProfileId
             };
 
-
-
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Creates a profile then populates 'UserId' field
+        /// </summary>
+        /// <returns>View and profile</returns>
         public IActionResult Create()
         {
             var userId = _userManager.GetUserId(User);
@@ -77,6 +87,11 @@ namespace To_Do_List.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Creates new profile
+        /// </summary>
+        /// <param name="profile">THe view Profile</param>
+        /// <returns>View if 'Model.State' is invalid</returns>
         [HttpPost]
         public async Task<IActionResult> Create(Profile profile)
         {
@@ -92,6 +107,11 @@ namespace To_Do_List.Controllers
             return View(profile);
         }
 
+        /// <summary>
+        /// Checks for Profile to delete
+        /// </summary>
+        /// <param name="id">The Profile's Id</param>
+        /// <returns>Delete confirmation View</returns>
         public async Task<IActionResult> Delete(int id)
         {
             Profile? profileToDelete = await _context.Profiles.FindAsync(id);
@@ -104,6 +124,11 @@ namespace To_Do_List.Controllers
             return View(profileToDelete);
         }
 
+        /// <summary>
+        /// Delete's given profile and all assigned tasks
+        /// </summary>
+        /// <param name="id">The Profile's Id</param>
+        /// <returns>Redirects to Profile Index View</returns>
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfimed(int id)
         {
@@ -111,17 +136,17 @@ namespace To_Do_List.Controllers
 
             if (profileToDelete != null)
             {
-                // set all tasks to be deleted that are assigned to given profile id
+                // List of connected tasks
                 List<Models.Task> TaskToDelete = await (from task in _context.Tasks
                                           where task.Assignee.ProfileId == profileToDelete.ProfileId
                                           select task).ToListAsync();
-
+                // Remove tasks
                 foreach (Task task in TaskToDelete)
                 {
                     _context.Remove(task);
                 }
 
-                // Remove profile and save changes
+                // Remove then deletes Profile and Tasks
                 _context.Remove(profileToDelete);
                 await _context.SaveChangesAsync();
 

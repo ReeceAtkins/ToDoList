@@ -14,11 +14,13 @@
 <body>
     
     @{
+        // Checks if User is logged in
         if (!User.Identity.IsAuthenticated)
         {
             HttpContextAccessor.HttpContext.Session.Remove("DoesUserHaveProfiles");
         }
 
+        // Retives session data
         int numProfiles = HttpContextAccessor.HttpContext.Session.GetInt32($"DoesUserHaveProfiles") ?? 0;
     }
 
