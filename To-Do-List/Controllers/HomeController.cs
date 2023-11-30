@@ -22,6 +22,11 @@ namespace To_Do_List.Controllers
             _userManager = userManager;
         }
 
+        /// <summary>
+        /// Checks if user has profiles then stores results in Session Data.
+        /// </summary>
+        /// <returns>Welcome page if there are no profiles</returns>
+        /// <returns>Profile Index if number of profiles > 0</returns>
         public async Task<IActionResult> Index()
         {
             int numProfiles = 0;
