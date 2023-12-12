@@ -30,6 +30,6 @@
         <input type="hidden" asp-for="ProfileId" />
         <input type="hidden" asp-for="Title" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-controller="Profile" asp-action="AssignedTasks" asp-route-id="@Model.ProfileId" class="btn btn-primary">Back to List</a>
     </form>
 </div>
