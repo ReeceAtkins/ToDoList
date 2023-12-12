@@ -18,11 +18,14 @@
 <h1>Assigned Tasks for @Html.DisplayFor(Model => Model.Name)</h1>
 
 <p>
-    <a asp-controller="Task" asp-action="CreateWithId" asp-route-id="@Model.ProfileId">
+    <a asp-controller="Task" asp-action="CreateWithId" asp-route-id="@Model.ProfileId" class="btn btn-success">
         Create new task for @Html.DisplayFor(Model => Model.Name)
     </a>
+    <a asp-action="Delete" asp-route-id="@Model.ProfileId" class="float-right btn btn-danger">Delete profile</a>
 </p>
-<table class="table">
+
+
+<table class="table text-white">
     <thead>
         <tr>
             <th>
@@ -47,8 +50,8 @@
                 @Html.DisplayFor(modelItem => task.Description)
             </td>
             <td>
-                <a asp-controller="Task" asp-action="Delete" asp-route-id="@task.TaskId">Delete task</a>
-                <a asp-controller="Task" asp-action="Edit" asp-route-id="@task.TaskId">Edit task</a> |
+                <a asp-controller="Task" asp-action="Delete" asp-route-id="@task.TaskId" class="btn btn-danger">Delete task</a>
+                <a asp-controller="Task" asp-action="Edit" asp-route-id="@task.TaskId" class="btn btn-info text-white">Edit task</a> |
             </td>
         </tr>
 }

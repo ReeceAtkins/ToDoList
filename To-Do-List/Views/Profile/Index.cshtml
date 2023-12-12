@@ -7,19 +7,26 @@
 <h1>Profiles</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-success">Create New Profile</a>
 </p>
 
-@foreach (var item in Model) {
 
-    <div class="card" style="width: 18rem;">
-        <div class="card-body">
-            <h5 class="card-title">@Html.DisplayFor(modelItem => item.Name)</h5>
-            <a asp-action="AssignedTasks" asp-route-id="@item.ProfileId">See Assigned Tasks</a> |
-            <a asp-action="Delete" asp-route-id="@item.ProfileId">Delete</a>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <a asp-action="AssignedTasks" asp-route-id="@item.ProfileId" class="card-link">
+
+            <div class="card bg-dark">
+                <img src="https://via.placeholder.com/300" class="card-img-top max-width-100" alt="Placeholder Image">
+                <div class="card-body">
+                    <h5 class="card-title text-muted text-center">@Html.DisplayFor(modelItem => item.Name)</h5>
+                    <!--<a asp-action="AssignedTasks" asp-route-id="@item.ProfileId">See Assigned Tasks</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ProfileId">Delete</a> -->
+                </div>
+            </div>
+            </a>
         </div>
-        <div class="card-body">
-            
-        </div>
-    </div>
-}
+    }
+</div>
